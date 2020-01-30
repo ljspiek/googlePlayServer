@@ -19,6 +19,19 @@ app.get('/apps', (req, res) => {
         }
     }
 
+    if(sort === 'app') {
+        results = googleApps.sort((a, b) => {
+            let x = a['App'].toLowerCase();
+            let y = b['App'].toLowerCase();
+
+            return x > y ? 1 : x < y ? -1 : 0;
+        });
+    } else if (sort === 'rating') {
+        results = googleApps.sort((a, b) => {
+            return a['Rating'] < b['Rating'] ? 1 : a['Rating'] > b['Rating'] ? -1 : 0;
+        })
+    }
+
     if(genres){
         if(!['action', 'puzzle', 'strategy', 'casual', 'arcade', 'card'].includes(genres)){
             return res
@@ -28,23 +41,21 @@ app.get('/apps', (req, res) => {
     }
     
 
-    let results = googleApps
+    results = googleApps
         .filter(googleApp => 
             googleApp
                 .Genres
                 .toLowerCase()
                 .includes(genres.toLowerCase()));
-    if (sort) {
-        results
-            .sort((a, b) => {
-                return a[sort] > b[sort] ? 1 : a[sort] < b[sort] ? -1: 0;
-            });
-    }
+    // if (sort) {
+    //     results
+    //         .sort((a, b) => {
+    //             return a[sort] > b[sort] ? 1 : a[sort] < b[sort] ? -1: 0;
+    //         });
+    // }
 
     res
         .json(results);
 })
 
-app.listen(8000, () => {
-    console.log('Server started on PORT 8000');
-})
+module.exports = app;
